@@ -125,4 +125,18 @@ struct Vector {
 	T* end() {
 	    return data_ + size_;
 	}
+
+    void erase(int index) {
+    
+        if (index < 0 || index >= size_) {
+            throw std::out_of_range("Vector::erase index out of range");
+        }
+
+        for (int i = index; i < size_ - 1; i++) {
+            data_[i] = data_[i + 1];
+        }
+    size_--;
+}
+
+
 };
