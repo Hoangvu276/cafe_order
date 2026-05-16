@@ -1,20 +1,22 @@
-template<typename T>
-struct Queue {
+#pragma once
 
-    vector<T> data;
+template<typename T>
+struct queue {
+
+    Vector<T> data_;
 
     void push(const T& item) {
-        data.push_back(item);
+        data_.push_back(item);
     }
 
     void pop() {
-        data.erase(data.begin());
+        data_.erase(data_.begin());
     }
 
     T front() {
-        return data[0];
+        return data_[0];
     }
     T rear(){
-    	return data[data.size()-1];
+    	return data_[data_.size_()-1];
     }
 };
