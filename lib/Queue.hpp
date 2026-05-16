@@ -1,5 +1,6 @@
 #pragma once
 template <typename T>
+#include <Vector>
 struct Queue {
     Vector<T> data_;
     int frontIndex_;
