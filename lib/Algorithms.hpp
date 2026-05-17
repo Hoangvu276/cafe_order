@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <cstddef>
 
-
 /// hoan doi cho 2 phan tu
 template <typename T>
 void _swap(T& a, T& b) {
@@ -10,7 +9,12 @@ void _swap(T& a, T& b) {
     a = b;
     b = temp;
 }
-
+/**
+ * bubbleSort - Sắp xếp nổi bọt - O(n²)
+ * arr : mảng cần sắp xếp
+ * n   : số phần tử
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void bubble_sort(T* arr, std::size_t size, Comp comp = Comp()) {
     for (std::size_t i = 0; i < size - 1; ++i) {
@@ -21,7 +25,12 @@ void bubble_sort(T* arr, std::size_t size, Comp comp = Comp()) {
         }
     }
 }
-
+/**
+ * selectionSort - Sắp xếp chọn - O(n²)
+ * arr : mảng cần sắp xếp
+ * n   : số phần tử
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void selection_sort(T* arr, std::size_t size, Comp comp = Comp()) {
     for (std::size_t i = 0; i < size - 1; ++i) {
@@ -36,7 +45,12 @@ void selection_sort(T* arr, std::size_t size, Comp comp = Comp()) {
         }
     }
 }
-
+/**
+ * insertionSort - Sắp xếp chèn - O(n²), hiệu quả với mảng gần sắp xếp
+ * arr : mảng cần sắp xếp
+ * n   : số phần tử
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void insertion_sort(T* arr, std::size_t size, Comp comp = Comp()) {
     for (std::size_t i = 1; i < size; ++i) {
@@ -67,7 +81,12 @@ void heapify(T* arr, std::size_t size, std::size_t root, Comp comp = Comp()) {
         heapify(arr, size, largest, comp);
     }
 }
-
+/**
+ * heapSort - Sắp xếp vun đống - O(n log n)
+ * arr : mảng cần sắp xếp
+ * n   : số phần tử
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void heap_sort(T* arr, std::size_t size, Comp comp = Comp()) {
     for (std::size_t i = size / 2 - 1; i < size; --i) {
@@ -87,29 +106,35 @@ int _partition(T* arr, std::size_t lo, std::size_t hi, Comp comp = Comp()){
     while(1){
         do{
             ++i;
-        }while(cmp(arr[i], pivot))
+        }while(comp(arr[i], pivot));
         do{
-            --;
-        }while(cmp(pivot, arr[j]));
+            --j;
+        }while(comp(pivot, arr[j]));
 
         if(i>=j) return j;
 
         _swap(arr[i], arr[j]);
     }
 }
-
+/**
+ * quickSort - Sắp xếp nhanh - O(n log n) trung bình
+ * arr : mảng cần sắp xếp
+ * lo  : chỉ số bắt đầu (thường là 0)
+ * hi  : chỉ số kết thúc (thường là n-1)
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void quicksort(T* arr, std::size_t lo, std::size_t hi, Comp comp = Comp()){
     if(lo >= hi) return;
     
     int mid = lo + (hi - lo) / 2;
-    if(cmp(arr[mid], arr[lo])) _swap(arr[lo], arr[mid]);
-    if(cmp(arr[hi],  arr[lo])) _swap(arr[lo], arr[hi]);
-    if(cmp(arr[mid], arr[hi])) _swap(arr[hi], arr[mid]);
+    if(comp(arr[mid], arr[lo])) _swap(arr[lo], arr[mid]);
+    if(comp(arr[hi],  arr[lo])) _swap(arr[lo], arr[hi]);
+    if(comp(arr[mid], arr[hi])) _swap(arr[hi], arr[mid]);
 
-    int p = _partition(arr, lo, hi, cmp);
-    quicksort(arr, lo, p - 1,)
-}   
+    int p = _partition(arr, lo, hi, comp);
+    quicksort(arr, lo, p - 1, comp);
+}
 
 template <typename T, typename Comp = std::less<T>>
 void merge(T* arr, std::size_t left, std::size_t mid, std::size_t right, Comp comp = Comp()) {
@@ -144,7 +169,12 @@ void merge(T* arr, std::size_t left, std::size_t mid, std::size_t right, Comp co
     delete[] L;
     delete[] R;
 }
-
+/**
+ * mergeSort - Sắp xếp trộn - O(n log n), ổn định
+ * arr : mảng cần sắp xếp
+ * n   : số phần tử
+ * cmp : hàm so sánh (mặc định tăng dần)
+ */
 template <typename T, typename Comp = std::less<T>>
 void merge_sort(T* arr, std::size_t left, std::size_t right, Comp comp = Comp()) {
     if (left < right) {
@@ -155,6 +185,31 @@ void merge_sort(T* arr, std::size_t left, std::size_t right, Comp comp = Comp())
     }
 }
 
+/**
+ * linearSearch - Tìm kiếm tuyến tính - O(n)
+ * arr : mảng cần tìm
+ * n   : số phần tử
+ * key : giá trị cần tìm
+ * Trả về: chỉ số phần tử đầu tiên bằng key, hoặc -1 nếu không có
+ */
+template <typename T, typename Comp = std::less<T>>
+int linear_search(T* arr, std::size_t size, const T& target, Comp comp = Comp()) {
+    for (std::size_t i = 0; i < size; ++i) {
+        if (!comp(arr[i], target) && !comp(target, arr[i])) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1; // not found
+}
+/**
+ * binarySearch - Tìm kiếm nhị phân - O(log n)
+ * Yêu cầu mảng đã được sắp xếp tăng dần theo cmp.
+ * arr : mảng đã sắp xếp
+ * n   : số phần tử
+ * key : giá trị cần tìm
+ * cmp : hàm so sánh tương ứng với thứ tự sắp xếp (mặc định tăng dần)
+ * Trả về: chỉ số phần tử tìm thấy (bất kỳ nếu có trùng lặp), hoặc -1
+ */
 template <typename T, typename Comp = std::less<T>>
 int binary_search(T* arr, std::size_t size, const T& target, Comp comp = Comp()) {
     std::size_t left = 0;
@@ -173,12 +228,3 @@ int binary_search(T* arr, std::size_t size, const T& target, Comp comp = Comp())
     return -1; // not found
 }
 
-template <typename T, typename Comp = std::less<T>>
-int linear_search(T* arr, std::size_t size, const T& target, Comp comp = Comp()) {
-    for (std::size_t i = 0; i < size; ++i) {
-        if (!comp(arr[i], target) && !comp(target, arr[i])) {
-            return static_cast<int>(i);
-        }
-    }
-    return -1; // not found
-}
