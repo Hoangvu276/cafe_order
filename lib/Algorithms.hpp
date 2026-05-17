@@ -79,6 +79,25 @@ void heap_sort(T* arr, std::size_t size, Comp comp = Comp()) {
     }
 }
 
+template<typename T, typename Comp = std::less<T>>
+int _partition(T* arr, std::size_t lo, std::size_t hi, Comp comp = Comp()){
+    T pivot = arr[lo + (hi - lo) / 2];
+    int i = lo - 1;
+    int j = hi + 1;
+    while(1){
+        do{
+            ++i;
+        }while(cmp(arr[i], pivot))
+        do{
+            --;
+        }while(cmp(pivot, arr[j]));
+
+        if(i>=j) return j;
+
+        _swap(arr[i], arr[j]);
+    }
+}
+
 template <typename T, typename Comp = std::less<T>>
 void quicksort(T* arr, std::size_t lo, std::size_t hi, Comp comp = Comp()){
     if(lo >= hi) return;
@@ -89,5 +108,39 @@ void quicksort(T* arr, std::size_t lo, std::size_t hi, Comp comp = Comp()){
     if(cmp(arr[mid], arr[hi])) _swap(arr[hi], arr[mid]);
 
     int p = _partition(arr, lo, hi, cmp);
-    quicksort(arr, lo, p - 1, )
+    quicksort(arr, lo, p - 1,)
 }   
+
+template <typename T, typename Comp = std::less<T>>
+void merge(T* arr, std::size_t left, std::size_t mid, std::size_t right, Comp comp = Comp()) {
+    std::size_t n1 = mid - left + 1;
+    std::size_t n2 = right - mid;
+
+    T* L = new T[n1];
+    T* R = new T[n2];
+
+    for (std::size_t i = 0; i < n1; ++i) {
+        L[i] = arr[left + i];
+    }
+    for (std::size_t j = 0; j < n2; ++j) {
+        R[j] = arr[mid + 1 + j];
+    }
+
+    std::size_t i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (comp(L[i], R[j])) {
+            arr[k++] = L[i++];
+        } else {
+            arr[k++] = R[j++];
+        }
+    }
+    while (i < n1) {
+        arr[k++] = L[i++];
+    }
+    while (j < n2) {
+        arr[k++] = R[j++];
+    }
+
+    delete[] L;
+    delete[] R;
+}
