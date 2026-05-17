@@ -144,3 +144,41 @@ void merge(T* arr, std::size_t left, std::size_t mid, std::size_t right, Comp co
     delete[] L;
     delete[] R;
 }
+
+template <typename T, typename Comp = std::less<T>>
+void merge_sort(T* arr, std::size_t left, std::size_t right, Comp comp = Comp()) {
+    if (left < right) {
+        std::size_t mid = left + (right - left) / 2;
+        merge_sort(arr, left, mid, comp);
+        merge_sort(arr, mid + 1, right, comp);
+        merge(arr, left, mid, right, comp);
+    }
+}
+
+template <typename T, typename Comp = std::less<T>>
+int binary_search(T* arr, std::size_t size, const T& target, Comp comp = Comp()) {
+    std::size_t left = 0;
+    std::size_t right = size - 1;
+
+    while (left <= right) {
+        std::size_t mid = left + (right - left) / 2;
+        if (comp(arr[mid], target)) {
+            left = mid + 1;
+        } else if (comp(target, arr[mid])) {
+            right = mid - 1;
+        } else {
+            return static_cast<int>(mid);
+        }
+    }
+    return -1; // not found
+}
+
+template <typename T, typename Comp = std::less<T>>
+int linear_search(T* arr, std::size_t size, const T& target, Comp comp = Comp()) {
+    for (std::size_t i = 0; i < size; ++i) {
+        if (!comp(arr[i], target) && !comp(target, arr[i])) {
+            return static_cast<int>(i);
+        }
+    }
+    return -1; // not found
+}
