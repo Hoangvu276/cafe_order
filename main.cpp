@@ -395,16 +395,29 @@ int main() {
             if (input_state == InputState::AddName || input_state == InputState::AddPrice) {
                 r_work.add_line(Style.warning.apply_bold("  " + Icons::Plus() + " THEM MON MOI"));
                 r_work.add_line("");
-                r_work.add_line("  Ten mon: " + temp_name + (input_state == InputState::AddName ? "_" : ""));
-                r_work.add_line("  Gia mon: " + input_buffer + (input_state == InputState::AddPrice ? "_" : "") + "đ");
+                std::string display_name = (input_state == InputState::AddName) ? (input_buffer + "_") : temp_name;
+                std::string display_price = (input_state == InputState::AddPrice) ? (input_buffer + "_") : "";
+                r_work.add_line("  Ten mon: " + display_name);
+                r_work.add_line("  Gia mon: " + display_price + "đ");
                 r_work.add_line("");
                 r_work.add_line(Style.gray.apply("  Enter: Xac nhan | ESC: Huy"));
             } 
             else if (input_state == InputState::EditName || input_state == InputState::EditPrice) {
                 r_work.add_line(Style.warning.apply_bold("  " + Icons::Edit() + " SUA THONG TIN MON"));
                 r_work.add_line("");
-                r_work.add_line("  Ten mon: " + temp_name + (input_state == InputState::EditName ? "_" : ""));
-                r_work.add_line("  Gia mon: " + input_buffer + (input_state == InputState::EditPrice ? "_" : "") + "đ");
+                std::string display_name = "";
+                std::string display_price = "";
+                if (input_state == InputState::EditName) {
+                    display_name = input_buffer + "_";
+                    if (menu_cursor < menu.menu_list.size()) {
+                        display_price = format_currency(menu.menu_list.at(menu_cursor).price);
+                    }
+                } else { // EditPrice
+                    display_name = temp_name;
+                    display_price = input_buffer + "_đ";
+                }
+                r_work.add_line("  Ten mon: " + display_name);
+                r_work.add_line("  Gia mon: " + display_price);
                 r_work.add_line("");
                 r_work.add_line(Style.gray.apply("  Enter: Xac nhan | ESC: Huy"));
             }
