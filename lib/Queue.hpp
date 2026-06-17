@@ -1,6 +1,9 @@
 #pragma once
+#include "Vector.hpp"
+#include <iostream>
+#include <stdexcept>
+
 template <typename T>
-#include <Vector>
 struct Queue {
     Vector<T> data_;
     int frontIndex_;
@@ -15,7 +18,8 @@ struct Queue {
 
     void pop() {
         if (empty()) {
-            std :: cout <<"Queue empty, Can't pop()";
+            std::cout << "Queue empty, Can't pop()\n";
+            return;
         }
 
         frontIndex_++;
@@ -53,14 +57,13 @@ struct Queue {
         data_.clear();
         frontIndex_ = 0;
     }
-    //merge data - loai bo cac phan tu thua
+
+    // merge data - loai bo cac phan tu thua
     void compact() {
         Vector<T> newData;
-
         for (int i = frontIndex_; i < data_.size(); i++) {
             newData.push_back(data_[i]);
         }
-
         data_ = newData;
         frontIndex_ = 0;
     }

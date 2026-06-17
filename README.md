@@ -1,103 +1,114 @@
-# Ứng dụng TUI Quản lý Quán Cà Phê
-**Nhóm CSC10004** — Môn Cấu trúc Dữ liệu và Giải thuật
+# Ứng dụng TUI Quản lý Quán Cà Phê (Phong cách Superfile)
+
+Ứng dụng quản lý quán cà phê giao diện dòng lệnh hiện đại (TUI - Text-based User Interface) được viết bằng C++17, kế thừa phong cách thiết kế tinh giản, bo tròn và bảng màu Catppuccin Mocha sẫm của công cụ **superfile**.
+
+Ứng dụng sử dụng các cấu trúc dữ liệu tự viết nằm trong thư mục `lib/` gồm: `LinkedList`, `Queue`, `PriorityQueue` (max-heap), `Stack`, `HashTable`, `BST/AVL` và các thuật toán sắp xếp (`mergeSort`).
 
 ---
 
-## Yêu cầu hệ thống
+##  Các Tính năng chính
 
-- Linux / macOS (có terminal hỗ trợ ncurses)
-- g++ >= C++17
-- libncurses: `sudo apt install libncurses-dev` (Ubuntu) hoặc `brew install ncurses` (macOS)
+1. **Quản lý thực đơn (Menu Manager)**:
+   - Hiển thị danh sách món ăn dưới dạng bảng với viền bo tròn.
+   - Thêm món mới (ID tự sinh `M01`, `M02`...), sửa thông tin, xóa món ăn (có xác nhận).
+   - Sắp xếp thực đơn theo Giá tăng/giam, Tên A-Z/Z-A sử dụng thuật toán sắp xếp trộn `mergeSort`.
+   - Hoàn tác (`Undo`) thao tác thêm/sửa/xóa vừa thực hiện bằng cấu trúc `Stack`.
+
+2. **Tạo đơn hàng (Order Creator)**:
+   - Nhập tên khách hàng trực tiếp inline không gây vỡ viền TUI.
+   - Tích chọn Khách hàng VIP (VIP được ưu tiên xử lý trước).
+   - Chọn món ăn trực quan bằng cách di chuyển thanh sáng và nhấn `Space` để tích chọn `[✓]` hoặc dùng `+`/`-` để thay đổi số lượng.
+   - Thanh toán (`T`) đưa đơn hàng vào Hàng đợi.
+
+3. **Xử lý đơn hàng (Order Process)**:
+   - Đơn VIP tự động đưa vào `PriorityQueue` (vun đống tối đa - max-heap theo số thứ tự đơn).
+   - Đơn thường tự động đưa vào `Queue` (vào trước ra trước - FIFO).
+   - Nhấn phím `P` lấy đơn hàng tiếp theo ra xử lý (đơn VIP luôn được xử lý trước đơn thường).
+   - Nhấn `U` để hoàn tác đơn hàng vừa xử lý (đưa đơn hàng ngược lại hàng đợi và hoàn lại doanh thu).
+
+4. **Thống kê & Báo cáo (Stats & Reports)**:
+   - Top 5 món bán chạy nhất dựa trên số lượt bán (HashTable kết hợp sắp xếp `mergeSort`).
+   - Thống kê doanh thu theo ngày từ cây tự cân bằng `AVL` (duyệt inorder tự động hiển thị ngày theo trình tự tăng dần).
+   - Tổng quan tổng doanh thu và tổng số đơn đã xử lý.
+
+5. **Cơ chế Fallback Font thông minh**:
+   - Khi chạy lần đầu, ứng dụng hiển thị màn hình cài đặt Font để bạn lựa chọn chế độ **Nerd Fonts Mode** (cho giao diện đẹp nhất) hoặc **Standard Text Mode** (tự động chuyển các icon thành text thông thường nếu terminal chưa cài Nerd Fonts). Cấu hình lưu tự động vào file `.cafe_tui.conf`.
 
 ---
 
-## Biên dịch & Chạy
+## 🖥️ Hướng dẫn Điều hướng TUI
+
+* **Sidebar (Cột trái)**: Di chuyển giữa các mục chính bằng phím mũi tên **Up/Down (↑/↓)** hoặc **j/k**. Nhấn **Enter/Tab/→** để chuyển focus vào cột Workspace bên phải.
+* **Workspace (Cột phải)**: Nhấn **ESC** hoặc **←** để quay lại Sidebar chọn danh mục khác.
+  * **Chế độ xem**: Di chuyển bằng **Up/Down (↑/↓)** hoặc **j/k**. Nhấn các phím chức năng nóng (`A`, `E`, `D`, `S`, `U`, `T`, `C`, `P` tùy theo màn hình).
+  * **Chế độ nhập chữ**: Gõ chữ bình thường, nhấn `Backspace` để xóa, nhấn `Enter` để lưu/chuyển trường, nhấn `ESC` để hủy nhập liệu.
+
+---
+
+## 🛠️ Biên dịch & Cài đặt
+
+### 1. Trên Linux (Biên dịch tĩnh hoặc động)
+
+#### Cách nhanh nhất (Dùng Script):
+Cấp quyền chạy và chạy script cài đặt tự động (script này biên dịch tĩnh hoàn toàn và cài vào hệ thống):
+```bash
+chmod +x install.sh
+./install.sh
+# Chạy chương trình từ bất kỳ đâu bằng lệnh:
+cafe_tui
+```
+
+#### Biên dịch thủ công bằng CMake:
+```bash
+mkdir build && cd build
+cmake ..
+make
+./spf
+```
+
+#### Biên dịch tĩnh (Static Build) để phân phối binary độc lập:
+```bash
+mkdir build && cd build
+cmake -DSTATIC_BUILD=ON ..
+make
+# Binary 'spf' tạo ra là file biên dịch tĩnh, chạy được trên mọi máy Linux khác.
+```
+
+---
+
+### 2. Biên dịch chéo sang Windows (Cross-compile từ Linux)
+
+Bạn có thể tạo ra file chạy `.exe` độc lập cho Windows trực tiếp từ máy Linux thông qua `mingw-w64`:
 
 ```bash
-make          # biên dịch
-make run      # chạy ngay
-./cafe_app    # hoặc chạy trực tiếp
+# Cài đặt trình biên dịch chéo MinGW trên Ubuntu/Debian
+sudo apt install g++-mingw-w64-x86-64-w64-mingw32
+
+# Biên dịch tĩnh tạo file chạy .exe cho Windows
+x86_64-w64-mingw32-g++ -O2 -static -o cafe_app.exe main.cpp -std=c++17
 ```
+Sau đó, bạn chỉ cần nén file `cafe_app.exe` thành file `.zip` gửi cho người dùng Windows.
 
 ---
 
-## Cấu trúc thư mục
+### 3. Biên dịch cục bộ trên Windows (MSYS2)
 
-```
-.
-├── main.cpp          # Toàn bộ ứng dụng TUI
-├── Makefile
-├── menu.txt          # Dữ liệu menu (tự sinh khi chạy)
-├── history.txt       # Lịch sử đơn hàng (tự sinh khi chạy)
-└── lib/
-    ├── LinkedList.hpp
-    ├── Queue.hpp
-    ├── PriorityQueue.hpp
-    ├── Stack.hpp
-    ├── HashTable.hpp
-    ├── BST.hpp
-    ├── AVL.hpp
-    └── Algorithms.hpp
-```
+1. Tải và cài đặt [MSYS2](https://www.msys2.org/).
+2. Mở terminal **MSYS2 MinGW 64-bit** và cài đặt toolchain g++:
+   ```bash
+   pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake make
+   ```
+3. Di chuyển vào thư mục dự án và biên dịch tĩnh:
+   ```bash
+   g++ -O2 -static -o cafe_app.exe main.cpp -std=c++17
+   ```
+4. Mở PowerShell hoặc Command Prompt của Windows, di chuyển tới thư mục và chạy file `cafe_app.exe`.
 
 ---
 
-## Điều hướng TUI
+## 🎨 Lưu ý cấu hình hiển thị Nerd Fonts
 
-| Phím | Chức năng |
-|------|-----------|
-| ↑ / ↓ | Di chuyển cursor |
-| ENTER | Xác nhận / Chọn |
-| SPACE | Toggle (VIP, chọn món) |
-| U | Undo thao tác cuối |
-| B / ESC | Quay lại menu trước |
-| PgUp / PgDn | Chuyển trang menu |
-
----
-
-## Chức năng chính
-
-### 1. Quản lý Menu
-- **[A]** Thêm món: nhập tên, giá → ID tự sinh (M01, M02...)
-- **[E]** Sửa món: chỉnh tên và giá của món đang chọn
-- **[D]** Xóa món: xóa với xác nhận
-- **[S]** Sắp xếp: theo giá tăng/giảm, theo tên A-Z/Z-A (dùng `mergeSort`)
-
-### 2. Tạo đơn hàng
-- Nhập tên khách → toggle VIP → chọn món bằng SPACE → [T] Thanh toán
-- Đơn VIP vào `PriorityQueue`, đơn thường vào `Queue`
-
-### 3. Xử lý đơn hàng
-- **[P]** Lấy đơn tiếp theo (VIP ưu tiên trước) → hiển thị chi tiết → lưu lịch sử
-
-### 4. Thống kê & Báo cáo
-- Top 5 món bán chạy (sort bằng `mergeSort`)
-- Doanh thu theo ngày (lưu trong `AVL`, inorder = tăng dần theo ngày)
-
-### 5. Undo
-- Nhấn **[U]** bất cứ lúc nào để hoàn tác thao tác cuối:
-  - Undo thêm món → xóa lại
-  - Undo sửa món → khôi phục về cũ
-  - Undo xóa món → thêm lại
-
----
-
-## Cấu trúc dữ liệu được sử dụng
-
-| Cấu trúc | Dùng cho |
-|----------|----------|
-| `LinkedList<MenuItem>` | Danh sách menu (có thứ tự thêm vào) |
-| `HashTable<string,int>` | Tra cứu món theo ID O(1), sold count |
-| `Queue<Order>` | Hàng đợi đơn thường (FIFO) |
-| `PriorityQueue<Order>` | Hàng đợi VIP (max-heap, VIP trước) |
-| `Stack<Action>` | Lưu lịch sử thao tác để Undo |
-| `LinkedList<Order>` | Lịch sử đơn đã xử lý |
-| `AVL<DailyRevenue>` | Doanh thu theo ngày (inorder = thứ tự ngày) |
-| `mergeSort` / `bubbleSort` | Sắp xếp menu, top món bán chạy |
-
----
-
-## Lưu trữ dữ liệu
-
-- `menu.txt`: lưu menu khi thoát, load lại khi khởi động
-- `history.txt`: lưu lịch sử đơn hàng đã xử lý
+Để hiển thị trọn vẹn và đẹp mắt các icon:
+1. Bạn hãy tải về và cài đặt một font chữ Nerd Font bất kỳ (Ví dụ: **FiraCode Nerd Font** hoặc **Hack Nerd Font**) từ trang chủ [Nerd Fonts](https://www.nerdfonts.com/).
+2. Thiết lập font chữ vừa tải làm font hiển thị mặc định của Terminal của bạn (như Windows Terminal, Alacritty, GNOME Terminal, v.v.).
+3. Khi khởi động ứng dụng lần đầu, hãy nhấn phím `Y` khi màn hình cấu hình font hiển thị để kích hoạt chế độ **Nerd Fonts**.

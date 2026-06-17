@@ -1,0 +1,11 @@
+build/
+dist/
+*.log
+*.txt
+!CMakeLists.txt
+*.conf
+superfile_analysis.json
+scratch/
+.cafe_tui.conf
+my_tui_project/build/
+my_tui_project/.cache/
