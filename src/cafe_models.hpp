@@ -8,14 +8,14 @@
 #include <algorithm>
 
 // Include custom data structures from lib/
-#include "lib/LinkedList.hpp"
-#include "lib/Queue.hpp"
-#include "lib/PriorityQueue.hpp"
-#include "lib/Stack.hpp"
-#include "lib/HashTable.hpp"
-#include "lib/AVL.hpp"
-#include "lib/Algorithms.hpp"
-#include "lib/Vector.hpp"
+#include "../lib/LinkedList.hpp"
+#include "../lib/Queue.hpp"
+#include "../lib/PriorityQueue.hpp"
+#include "../lib/Stack.hpp"
+#include "../lib/HashTable.hpp"
+#include "../lib/AVL.hpp"
+#include "../lib/Algorithms.hpp"
+#include "../lib/Vector.hpp"
 
 // ── Models ───────────────────────────────────────────────────────────────
 
