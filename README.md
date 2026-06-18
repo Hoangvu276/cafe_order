@@ -63,7 +63,7 @@ cafe_tui
 mkdir build && cd build
 cmake ..
 make
-./spf
+./cafe_tui
 ```
 
 #### Biên dịch tĩnh (Static Build) để phân phối binary độc lập:
@@ -71,7 +71,7 @@ make
 mkdir build && cd build
 cmake -DSTATIC_BUILD=ON ..
 make
-# Binary 'spf' tạo ra là file biên dịch tĩnh, chạy được trên mọi máy Linux khác.
+# Binary 'cafe_tui' tạo ra là file biên dịch tĩnh, chạy được trên mọi máy Linux khác.
 ```
 
 ---
@@ -85,9 +85,9 @@ Bạn có thể tạo ra file chạy `.exe` độc lập cho Windows trực ti�
 sudo apt install g++-mingw-w64-x86-64-w64-mingw32
 
 # Biên dịch tĩnh tạo file chạy .exe cho Windows
-x86_64-w64-mingw32-g++ -O2 -static -o cafe_app.exe main.cpp -std=c++17
+x86_64-w64-mingw32-g++ -O3 -static -o build/cafe_tui.exe main.cpp -std=c++17 -I.
 ```
-Sau đó, bạn chỉ cần nén file `cafe_app.exe` thành file `.zip` gửi cho người dùng Windows.
+Sau đó, bạn chỉ cần nén file `cafe_tui.exe` thành file `.zip` gửi cho người dùng Windows.
 
 ---
 
@@ -100,9 +100,9 @@ Sau đó, bạn chỉ cần nén file `cafe_app.exe` thành file `.zip` gửi ch
    ```
 3. Di chuyển vào thư mục dự án và biên dịch tĩnh:
    ```bash
-   g++ -O2 -static -o cafe_app.exe main.cpp -std=c++17
+   g++ -O3 -static -o cafe_tui.exe main.cpp -std=c++17 -I.
    ```
-4. Mở PowerShell hoặc Command Prompt của Windows, di chuyển tới thư mục và chạy file `cafe_app.exe`.
+4. Mở PowerShell hoặc Command Prompt của Windows, di chuyển tới thư mục và chạy file `cafe_tui.exe`.
 
 ---
 
